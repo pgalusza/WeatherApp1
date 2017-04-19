@@ -17,12 +17,12 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     protected WeatherClient weather = null;
-    private double minTemp = 0.0;
+    private double minTemp = 10.0;
     private double maxTemp = 75.0;
     private String notificationMessage = "";
     private double longitude = 40.1164;
     private double latitude = -88.2434;
-    String location = "Chicago, IL";
+    String location = "Champaign, IL";
 
 
     @Override
