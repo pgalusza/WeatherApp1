@@ -98,6 +98,11 @@ public class WeatherClient {
     }
 
 
+    /**
+     * Returns true when the temperature exceeds a given value
+     * @param max
+     * @return
+     */
     public boolean tempGreaterThan(double max) {
         Log.d("CONDITIONCHECK", "tempGreaterThan called");
         try {
@@ -118,6 +123,11 @@ public class WeatherClient {
         return false;
     }
 
+    /**
+     * Returns true when the temperature drops below a given value
+     * @param min
+     * @return
+     */
     public boolean tempLessThan(double min) {
         Log.d("CONDITIONCHECK", "tempLessThan called");
         try {

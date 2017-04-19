@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private String notificationMessage = "";
     private double longitude = 40.1164;
     private double latitude = -88.2434;
-    String location = "Champaign, IL";
+    String location = "Chicago, IL";
 
 
     @Override
@@ -48,26 +48,39 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Posts a notification if the message exists
+     * @param view
+     */
     public void addNotification(View view) {
-        Log.d("ADDNOTIFICATION", "addNotification has been called");
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
-        builder.setContentTitle("Weather Notification");
-        builder.setContentText(notificationMessage);
+        if(notificationMessage != "") {
+            Log.d("ADDNOTIFICATION", "addNotification has been called");
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
+            builder.setContentTitle("Weather Notification");
+            builder.setContentText(notificationMessage);
 
-        int notificationId = 001;
-        NotificationManager notifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notifyMgr.notify(notificationId, builder.build());
+            int notificationId = 001;
+            NotificationManager notifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notifyMgr.notify(notificationId, builder.build());
+        }
     }
 
+    /**
+     * Gets the location coordinates from the location name
+     * @param location
+     */
     private void getLocationCoords(String location) {
         try {
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-            List<Address> addresses = geocoder.getFromLocationName(location, 1);
-            if(addresses.size() > 0) {
-                Address address = addresses.get(0);
-                double longitude = address.getLongitude();
-                double latitude = address.getLatitude();
+            List<Address> addresses = geocoder.getFromLocationName(location, 10);
+            for(int i =0; i < addresses.size(); i++) {
+                if (addresses.get(i) != null) {
+                    Address address = addresses.get(i);
+                    double longitude = address.getLongitude();
+                    double latitude = address.getLatitude();
+                    break;
+                }
             }
             Log.d("Geocoder", Double.toString(longitude) + " " + Double.toString(latitude));
         } catch (Exception e) {
