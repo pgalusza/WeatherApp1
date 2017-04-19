@@ -2,7 +2,7 @@
     <string name="app_name">WeatherApp</string>
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Settings</string>
-    <string name="button_refresh">Refresh</string>
+    <string name="button_refresh">Notify</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->

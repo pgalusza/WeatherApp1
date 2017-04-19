@@ -2,6 +2,7 @@ package com.example.pawel.weatherapp;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -33,7 +34,8 @@ public class WeatherClient {
     /**
      * Gets new data from the Dark Sky API
      */
-    public void updateData() {
+    public void updateData(double longitude, double latitude) {
+        ADDRESS = "https://api.darksky.net/forecast/" + DARKSKY_API_KEY + "/" + Double.toString(longitude) + "," + Double.toString(latitude);
         Log.d("UPDATEDATA", "updateData is being executed");
         try {
             URL url = new URL(ADDRESS);
@@ -94,4 +96,48 @@ public class WeatherClient {
         }
         return result;
     }
+
+
+    public boolean tempGreaterThan(double max) {
+        Log.d("CONDITIONCHECK", "tempGreaterThan called");
+        try {
+            JSONArray hourlyData = allData.getJSONObject("hourly").getJSONArray("data");
+
+            long currTime = (long) System.currentTimeMillis() / 1000;
+            long maxTime = currTime + 60 * 60 * 24;
+            for (int i = 0; i < hourlyData.length(); i++) {
+                if (hourlyData.getJSONObject(i).getDouble("temperature") > max &&
+                        hourlyData.getJSONObject(i).getInt("time") > currTime &&
+                        hourlyData.getJSONObject(i).getInt("time") < maxTime)
+                    return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean tempLessThan(double min) {
+        Log.d("CONDITIONCHECK", "tempLessThan called");
+        try {
+            JSONArray hourlyData = allData.getJSONObject("hourly").getJSONArray("data");
+            Log.d("CONDITIONCHECK", "hourlyData collected");
+
+            long currTime = (long) System.currentTimeMillis() / 1000;
+            long maxTime = currTime + 60 * 60 * 24;
+            Log.d("TIME", Long.toString(currTime) + " " + Long.toString(maxTime));
+            for (int i = 0; i < hourlyData.length(); i++) {
+                if (hourlyData.getJSONObject(i).getDouble("temperature") < min &&
+                        hourlyData.getJSONObject(i).getInt("time") > currTime &&
+                        hourlyData.getJSONObject(i).getInt("time") < maxTime)
+                    return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
 }
