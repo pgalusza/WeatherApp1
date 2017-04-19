@@ -1,10 +1,6 @@
 package com.example.pawel.weatherapp;
 
-import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -14,13 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.List;
 import java.util.Locale;
-
-import static java.lang.System.currentTimeMillis;
 
 public class MainActivity extends AppCompatActivity {
     protected WeatherClient weather = null;
@@ -29,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private String notificationMessage = "";
     private double longitude = 40.1164;
     private double latitude = -88.2434;
-    String location = "Chicago, IL";
+    String location = "Champaign, IL";
 
 
     @Override
@@ -37,18 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        try {
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-            List<Address> addresses = geocoder.getFromLocationName(location, 1);
-            if(addresses.size() > 0) {
-                Address address = addresses.get(0);
-                double longitude = address.getLongitude();
-                double latitude = address.getLatitude();
-            }
-            Log.d("Geocoder", Double.toString(longitude) + " " + Double.toString(latitude));
-        } catch (Exception e) {
-            Log.d("Geocoder", "Location not found");
-        }
+        getLocationCoords(location);
 
         if(weather == null) {
             refreshWeather();
@@ -76,6 +58,21 @@ public class MainActivity extends AppCompatActivity {
         int notificationId = 001;
         NotificationManager notifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notifyMgr.notify(notificationId, builder.build());
+    }
+
+    private void getLocationCoords(String location) {
+        try {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocationName(location, 1);
+            if(addresses.size() > 0) {
+                Address address = addresses.get(0);
+                double longitude = address.getLongitude();
+                double latitude = address.getLatitude();
+            }
+            Log.d("Geocoder", Double.toString(longitude) + " " + Double.toString(latitude));
+        } catch (Exception e) {
+            Log.d("Geocoder", "Location not found");
+        }
     }
 
     /*
