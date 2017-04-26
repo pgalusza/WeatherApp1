@@ -40,7 +40,9 @@ public class WeatherClient {
             Log.d("WRITETOFILE", "attempting to write file");
             FileWriter writer = new FileWriter(new File(path));
             writer.write(allData.toString());
+            Log.d("WRITETOFILE", "file has been written");
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
 
@@ -58,7 +60,9 @@ public class WeatherClient {
             }
             reader.close();
             allData = new JSONObject(fileContents);
+            Log.d("READFROMFILE", "file has been read");
         } catch (Exception e){
+            e.printStackTrace();
             return false;
         }
 
