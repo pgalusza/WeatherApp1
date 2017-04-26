@@ -2,9 +2,11 @@ package com.example.pawel.weatherapp;
 
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +18,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+    static final int SETTINGS_REQUEST = 1;
+
     protected WeatherClient weather = null;
     private double minTemp = 10.0;
     private double maxTemp = 75.0;
@@ -30,12 +34,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
         getLocationCoords(location);
 
         if(weather == null) {
             refreshWeather();
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == SETTINGS_REQUEST) {
+            if(resultCode == RESULT_OK) {
+
+            }
+        }
+    }
+
 
     /**
      * Respond to button press.
@@ -44,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
     public void goToSettings(View view) {
         Log.d("SETTINGSBUTTON", "goToSettings has been called");
 
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
-        startActivity(intent);
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivityForResult(intent, SETTINGS_REQUEST);
     }
 
     /**
@@ -58,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
             builder.setSmallIcon(R.drawable.ic_notifications_black_24dp);
             builder.setContentTitle("Weather Notification");
+            builder.setStyle(new NotificationCompat.BigTextStyle().bigText(notificationMessage));
             builder.setContentText(notificationMessage);
 
             int notificationId = 001;
@@ -141,15 +158,91 @@ public class MainActivity extends AppCompatActivity {
                 TextView locationText = (TextView) findViewById(R.id.locationText);
                 locationText.setText(location);
 
-                if(weather.tempGreaterThan(maxTemp)) {
-                    notificationMessage += "Weather will be too hot today.  ";
-                    Log.d("TOOHOT", "weather is too hot");
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putLong("last_update_time", System.currentTimeMillis());
+                editor.commit();
+
+                notificationMessage = checkTemperatures(sharedPref) + "  " + checkAllPrecipitation(sharedPref);
+            }
+        }
+
+        /**
+         * Finds if the temperature will leave the comfortable range in the upcoming 24 hours
+         * @param sharedPref
+         * @return
+         */
+        private String checkTemperatures(SharedPreferences sharedPref) {
+            String result = "";
+            double minTemp = Double.parseDouble(sharedPref.getString("pref_min_temp", "50"));
+            double maxTemp = Double.parseDouble(sharedPref.getString("pref_max_temp", "75"));
+
+            if(weather.tempGreaterThan(maxTemp)) {
+                result += "too hot";
+                Log.d("TOOHOT", "weather is too hot");
+            }
+            if(weather.tempLessThan(minTemp)) {
+                if(result.equals("")) {
+                    result += "too cold";
+                } else {
+                    result += " and too cold";
                 }
-                if(weather.tempLessThan(minTemp)) {
-                    notificationMessage += "Weather will be too cold today.  ";
-                    Log.d("TOOCOLD", "weather is too cold");
+                Log.d("TOOCOLD", "weather is too cold");
+            }
+
+            if(result.equals(""))
+                return "";
+            else
+                return "Today's temperature will be " + result +".";
+        }
+
+        /**
+         * Finds which of the selected precipitation types are expected in the upcoming 24 hours
+         * @param sharedPref
+         * @return
+         */
+        private String checkAllPrecipitation(SharedPreferences sharedPref) {
+            String expectedPrecip = "";
+            if(sharedPref.getBoolean("pref_fog", false) && weather.checkPrecipitation("Fog")) {
+                if(expectedPrecip.equals("")) {
+                    expectedPrecip += "fog";
+                } else {
+                    expectedPrecip += ", fog";
                 }
             }
+            if(sharedPref.getBoolean("pref_drizzle", false) && weather.checkPrecipitation("Drizzle")) {
+                if(expectedPrecip.equals("")) {
+                    expectedPrecip += "drizzle";
+                } else {
+                    expectedPrecip += ", drizzle";
+                }
+            }
+            if(sharedPref.getBoolean("pref_rain", false) && weather.checkPrecipitation("Rain")) {
+                if(expectedPrecip.equals("")) {
+                    expectedPrecip += "rain";
+                } else {
+                    expectedPrecip += ", rain";
+                }
+            }
+            if(sharedPref.getBoolean("pref_snow", false) && weather.checkPrecipitation("Snow")) {
+                if(expectedPrecip.equals("")) {
+                    expectedPrecip += "snow";
+                } else {
+                    expectedPrecip += ", snow";
+                }
+            }
+            if(sharedPref.getBoolean("pref_hail", false) && weather.checkPrecipitation("Hail")) {
+                if(expectedPrecip.equals("")) {
+                    expectedPrecip += "hail";
+                } else {
+                    expectedPrecip += ", hail";
+                }
+            }
+
+            if(expectedPrecip.equals(""))
+                return "";
+            else
+                return "There is a chance of " + expectedPrecip + " today.";
         }
     }
 }

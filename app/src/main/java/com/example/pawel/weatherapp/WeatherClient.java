@@ -51,6 +51,7 @@ public class WeatherClient {
 
     }
 
+
     /**
      * Reads the data from the input stream, stores in class variable.
      * @param inputStream
@@ -142,6 +143,35 @@ public class WeatherClient {
                         hourlyData.getJSONObject(i).getInt("time") > currTime &&
                         hourlyData.getJSONObject(i).getInt("time") < maxTime)
                     return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks to see if a given precipitation type is expected
+     * @param type
+     * @return
+     */
+    public boolean checkPrecipitation(String type) {
+        Log.d("CONDITIONCHECK", "checkPrecipitation called");
+        try {
+            JSONArray hourlyData = allData.getJSONObject("hourly").getJSONArray("data");
+            Log.d("CONDITIONCHECK", "hourlyData collected");
+
+            long currTime = (long) System.currentTimeMillis() / 1000;
+            long maxTime = currTime + 60 * 60 * 24;
+            Log.d("TIME", Long.toString(currTime) + " " + Long.toString(maxTime));
+            for (int i = 0; i < hourlyData.length(); i++) {
+                if (hourlyData.getJSONObject(i).getString("summary").equals(type) &&
+                        hourlyData.getJSONObject(i).getInt("time") > currTime &&
+                        hourlyData.getJSONObject(i).getInt("time") < maxTime){
+                    Log.d("CONDITIONCHECK", type + " expected");
+                    return true;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

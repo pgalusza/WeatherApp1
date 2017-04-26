@@ -1,9 +1,24 @@
 <resources>
     <string name="app_name">WeatherApp</string>
-    <string name="edit_message">Enter a message</string>
+    <string name="settings_title">Settings</string>
+    <string name="min_temp_message">Min Temp</string>
+    <string name="max_temp_message">Max Temp</string>
     <string name="button_send">Settings</string>
     <string name="button_refresh">Notify</string>
     <string name="title_activity_settings">Settings</string>
+
+    <string name="pref_temperature_title">Temperature Notification Settings</string>
+    <string name="pref_min_temp">Minimum Comfortable Temperature</string>
+    <string name="pref_min_temp_default">50</string>
+    <string name="pref_max_temp">Maximum Comfortable Temperature</string>
+    <string name="pref_max_temp_default">75</string>
+
+    <string name="pref_precipitation_title">Precipitation Notification Settings</string>
+    <string name="pref_drizzle">Drizzle</string>
+    <string name="pref_rain">Rain</string>
+    <string name="pref_snow">Snow</string>
+    <string name="pref_fog">Fog</string>
+    <string name="pref_hail">Hail</string>
 
     <!-- Strings related to Settings -->
 

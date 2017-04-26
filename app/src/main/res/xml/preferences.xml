@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_temperature_title"
+        android:key="pref_key_temperature_settings">
+        <EditTextPreference
+            android:defaultValue="@string/pref_min_temp_default"
+            android:key="pref_min_temp"
+            android:singleLine="false"
+            android:title="@string/pref_min_temp" />
+        <EditTextPreference
+            android:key="pref_max_temp"
+            android:title="@string/pref_max_temp"
+            android:defaultValue="@string/pref_max_temp_default"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_precipitation_title"
+        android:key="pref_key_precipitation_settings">
+        <CheckBoxPreference
+            android:key="pref_fog"
+            android:title="@string/pref_fog"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="pref_drizzle"
+            android:title="@string/pref_drizzle"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="pref_rain"
+            android:title="@string/pref_rain"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="pref_snow"
+            android:title="@string/pref_snow"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="pref_hail"
+            android:title="@string/pref_hail"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+</PreferenceScreen>
