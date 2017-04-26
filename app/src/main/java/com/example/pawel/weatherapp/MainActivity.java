@@ -136,8 +136,16 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected WeatherClient doInBackground(Void... urls) {
-            weather = new WeatherClient(getFilesDir());
-            weather.updateData(longitude, latitude);
+            if(weather == null) {
+                weather = new WeatherClient(getFilesDir().getPath() + "/" + "weatherData.txt", longitude, latitude);
+            }
+
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+            if(weather.allData == null ||
+                    sharedPref.getLong("last_update_time", 0) < System.currentTimeMillis() + 1000*60*60) {
+                weather.updateData(longitude, latitude);
+            }
+
             return weather;
         }
 

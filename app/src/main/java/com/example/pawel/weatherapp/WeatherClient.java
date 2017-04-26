@@ -8,6 +8,9 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -24,11 +27,42 @@ public class WeatherClient {
     private static final String DARKSKY_API_KEY = "29de5cf6598f94fbdc7eb4a295b8a089";
 
     private String ADDRESS = "https://api.darksky.net/forecast/" + DARKSKY_API_KEY + "/40.1164,-88.2434";
-    public JSONObject allData;
-    private File file;
+    public JSONObject allData = null;
+    private String path;
 
-    public WeatherClient(File file) {
-        this.file = file;
+    public WeatherClient(String path, double longitude, double latitude) {
+        this.path = path;
+        readFromFile();
+    }
+
+    private boolean writeToFile() {
+        try {
+            Log.d("WRITETOFILE", "attempting to write file");
+            FileWriter writer = new FileWriter(new File(path));
+            writer.write(allData.toString());
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean readFromFile() {
+        try {
+            Log.d("READFROMFILE", "attempting to read file");
+            BufferedReader reader = new BufferedReader(new FileReader(path));
+            String fileContents = "";
+            String line = "";
+            while((line=reader.readLine()) != null) {
+                fileContents += line;
+            }
+            reader.close();
+            allData = new JSONObject(fileContents);
+        } catch (Exception e){
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -45,6 +79,7 @@ public class WeatherClient {
             readStream(inputStream);
 
             inputStream.close();
+            writeToFile();
         } catch (Exception e) {
             e.printStackTrace();
         }
