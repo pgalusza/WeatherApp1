@@ -35,11 +35,15 @@ public class WeatherClient {
         readFromFile();
     }
 
-    private boolean writeToFile() {
+    /**
+     * Writes JSONObject to file
+     * @return
+     */
+    private boolean writeToFile(String jsonText) {
         try {
             Log.d("WRITETOFILE", "attempting to write file");
             FileWriter writer = new FileWriter(new File(path));
-            writer.write(allData.toString());
+            writer.write(jsonText);
             Log.d("WRITETOFILE", "file has been written");
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,16 +53,26 @@ public class WeatherClient {
         return true;
     }
 
+    /**
+     * Reads JSONObject from file
+     * @return
+     */
     public boolean readFromFile() {
         try {
             Log.d("READFROMFILE", "attempting to read file");
             BufferedReader reader = new BufferedReader(new FileReader(path));
-            String fileContents = "";
-            String line = "";
-            while((line=reader.readLine()) != null) {
-                fileContents += line;
-            }
+            String fileContents = reader.readLine();
+
+            //String line = "";
+            //while((line=reader.readLine()) != null) {
+            //    fileContents += line;
+            //}
             reader.close();
+
+            if(fileContents == null) {
+                return false;
+            }
+
             allData = new JSONObject(fileContents);
             Log.d("READFROMFILE", "file has been read");
         } catch (Exception e){
@@ -83,7 +97,6 @@ public class WeatherClient {
             readStream(inputStream);
 
             inputStream.close();
-            writeToFile();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,6 +115,7 @@ public class WeatherClient {
             String line = reader.readLine();
             Log.d("READSTREAM", "website has been read");
 
+            writeToFile(line);
             allData = new JSONObject(line);
             Log.d("READSTREAM", "json array has been stored");
         } catch (Exception e) {

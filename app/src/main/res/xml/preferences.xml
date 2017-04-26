@@ -7,11 +7,13 @@
             android:defaultValue="@string/pref_min_temp_default"
             android:key="pref_min_temp"
             android:singleLine="false"
-            android:title="@string/pref_min_temp" />
+            android:title="@string/pref_min_temp"
+            android:inputType="numberDecimal"/>
         <EditTextPreference
             android:key="pref_max_temp"
             android:title="@string/pref_max_temp"
-            android:defaultValue="@string/pref_max_temp_default"/>
+            android:defaultValue="@string/pref_max_temp_default"
+            android:inputType="numberDecimal"/>
     </PreferenceCategory>
 
     <PreferenceCategory

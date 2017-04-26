@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected WeatherClient doInBackground(Void... urls) {
             if(weather == null) {
-                weather = new WeatherClient(getFilesDir().getPath() + "/" + "weatherData.txt", longitude, latitude);
+                weather = new WeatherClient(getFilesDir().getPath() + "/" + "weatherData.json", longitude, latitude);
             }
 
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
