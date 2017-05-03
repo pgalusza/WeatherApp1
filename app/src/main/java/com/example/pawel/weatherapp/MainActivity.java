@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity
 
     protected WeatherClient weather = null;
     private String notificationMessage = "";
-    private double latitude = 40.1164;
-    private double longitude = -88.2434;
+    private double longitude = 40.1164;
+    private double latitude = -88.2434;
     String locationName = "";
 
 
@@ -70,9 +70,6 @@ public class MainActivity extends AppCompatActivity
         createLocationRequest();
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-        //getLocationCoords(locationName);
-
     }
 
     /**
@@ -298,8 +295,8 @@ public class MainActivity extends AppCompatActivity
 
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
-            if(weather.allData == null ||
-                    sharedPref.getLong("last_update_time", 0) < System.currentTimeMillis() + 1000*60*60) {
+            if(weather.allData == null){// ||
+                    //sharedPref.getLong("last_update_time", 0) < System.currentTimeMillis() + 1000*60*60) {
                 weather.updateData(latitude, longitude);
             }
 
