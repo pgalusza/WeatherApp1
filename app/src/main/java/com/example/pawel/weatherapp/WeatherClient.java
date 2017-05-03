@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
@@ -41,9 +40,15 @@ public class WeatherClient {
      */
     private boolean writeToFile(String jsonText) {
         try {
+            Log.d("WeatherClient", Integer.toString(jsonText.length()));
+
             Log.d("WRITETOFILE", "attempting to write file");
+
+            deleteFile(path);
             FileWriter writer = new FileWriter(new File(path));
-            writer.write(jsonText);
+            //for(int i=0; i<jsonText.length(); i++) {
+                writer.write(jsonText);
+            //}
             Log.d("WRITETOFILE", "file has been written");
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,6 +59,17 @@ public class WeatherClient {
     }
 
     /**
+     * Deletes file.
+     * @param fileName
+     */
+    private void deleteFile(String fileName) {
+        File file = new File(fileName);
+        if(file.exists()) {
+            file.delete();
+        }
+    }
+
+    /**
      * Reads JSONObject from file
      * @return
      */
@@ -61,18 +77,17 @@ public class WeatherClient {
         try {
             Log.d("READFROMFILE", "attempting to read file");
             BufferedReader reader = new BufferedReader(new FileReader(path));
-            String fileContents = reader.readLine();
+            String fileContents = "";//reader.readLine();
 
-            //String line = "";
-            //while((line=reader.readLine()) != null) {
-            //    fileContents += line;
-            //}
+            String line = "";
+            while((line=reader.readLine()) != null) {
+                fileContents += line;
+            }
             reader.close();
 
             if(fileContents == null) {
                 return false;
             }
-
             allData = new JSONObject(fileContents);
             Log.d("READFROMFILE", "file has been read");
         } catch (Exception e){
